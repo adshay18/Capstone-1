@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import db, connect_db, User
+from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
 
 CURR_USER_KEY = "curr_user"
 

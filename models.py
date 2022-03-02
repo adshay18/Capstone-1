@@ -12,6 +12,96 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+class Like(db.Model):
+    """Images liked by user"""
+    
+    __tablename__ = 'likes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    image_id = db.Column(db.Integer, db.ForeignKey('images.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    image = db.relationship('Image', backref='likes')
+    user = db.relationship('User', backref='likes')
+    
+    def __repr__(self):
+        return f'<Like #{self.id}, User {self.user.username}, Image #{self.image.id}>'
+
+class Image(db.Model):
+    """Image sourced from pexel API"""
+    
+    __tablename__ = 'images'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    
+    pexel_id = db.Column(db.Integer, nullable=False)
+    
+    url = db.Column(db.Text, nullable=False)
+    
+    avg_color = db.Column(db.Text)
+    
+    def __repr__(self):
+        return f'<Image #{self.id}, Pexel ID {self.pexel_id}>'
+
+class Board(db.Model):
+    """Board comprised of images a user wants to include""" 
+    
+    __tablename__ = 'boards'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    
+    name = db.Column(db.Text, nullable=False)
+    
+    description = db.Column(db.Text, nullable=False)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    images = db.relationship('Board_Image', secondary='images')
+    
+    user = db.relationship('User', backref='boards')
+    
+class Board_Image(db.Model):
+    '''Images on a board'''
+    
+    __tablename__ = 'board_images'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    image_id = db.Column(db.Integer, db.ForeignKey('images.id', ondelete='CASCADE'),
+        nullable=False)
+    board = db.relationship('Board', backref='board_images')
+    images = db.relationship('Image', backref='board_images')
+    
+    def __repr__(self):
+        return f'<Board #{self.board_id} Image #{self.image_id}>'
+    
+class Fav_Board(db.Model):
+    """Boards that a user likes"""
+    
+    __tablename__ = 'fav_boards'
+    
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id', ondelete='CASCADE'),
+        nullable=False)
+    
+    board = db.relationship('Board', backref='fav_boards')
+    user = db.relationship('User', backref='fav_boards')
+    
+    def __repr__(self):
+        return f'<Fav_Board #{self.id}, user_id {self.user_id}, board_id {self.board_id}>'
+    
 class User(db.Model):
     """User in the system."""
 
@@ -19,7 +109,7 @@ class User(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True,
+        primary_key=True
     )
 
     email = db.Column(
@@ -40,27 +130,17 @@ class User(db.Model):
     )
 
     likes = db.relationship(
-        'Message',
-        secondary="likes"
+        'Image', secondary='likes'
     )
+    
+    fav_boards = db.relationship('Board', secondary='fav_boards')
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    # def is_followed_by(self, other_user):
-    #     """Is this user followed by `other_user`?"""
-
-    #     found_user_list = [user for user in self.followers if user == other_user]
-    #     return len(found_user_list) == 1
-
-    # def is_following(self, other_user):
-    #     """Is this user following `other_use`?"""
-
-    #     found_user_list = [user for user in self.following if user == other_user]
-    #     return len(found_user_list) == 1
 
     @classmethod
-    def signup(cls, username, email, password, image_url):
+    def signup(cls, username, email, password):
         """Sign up user.
 
         Hashes password and adds user to system.
