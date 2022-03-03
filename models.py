@@ -26,7 +26,6 @@ class Like(db.Model):
         nullable=False)
     
     image = db.relationship('Image', backref='likes')
-    user = db.relationship('User', backref='likes')
     
     def __repr__(self):
         return f'<Like #{self.id}, User {self.user.username}, Image #{self.image.id}>'
@@ -60,9 +59,7 @@ class Board(db.Model):
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False)
-    
-    images = db.relationship('Board_Image', secondary='images')
-    
+    images = db.relationship('Image', secondary='board_images')
     user = db.relationship('User', backref='boards')
     
 class Board_Image(db.Model):
@@ -97,7 +94,6 @@ class Fav_Board(db.Model):
         nullable=False)
     
     board = db.relationship('Board', backref='fav_boards')
-    user = db.relationship('User', backref='fav_boards')
     
     def __repr__(self):
         return f'<Fav_Board #{self.id}, user_id {self.user_id}, board_id {self.board_id}>'

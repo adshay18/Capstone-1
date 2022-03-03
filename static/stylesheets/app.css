@@ -1,3 +1,5 @@
+/* Custom Navbar styling */
+
 .navbar {
 	background-color: #fff;
 	height: 46px;
@@ -77,4 +79,63 @@ nav form.navbar-form {
 #search:focus {
 	box-shadow: none;
 	border: 2px solid #007bff;
+}
+
+/* change navbar on forms */
+
+/* .form > .navbar {
+	background-image: url("/static/images/nav-bg.png");
+	background-size: 100% 100%;
+} */
+
+.form .navbar-header {
+	margin: 0 auto;
+}
+
+.form .navbar-brand {
+	margin: 0;
+}
+
+.form .navbar-brand span {
+	display: none;
+}
+
+.form .nav.navbar-nav.navbar-right {
+	position: absolute;
+	right: 16px;
+}
+
+.form > .navbar a {
+	color: #fff;
+}
+
+.form > .navbar form.navbar-form {
+	display: none;
+}
+
+.form {
+	background-color: #fff;
+}
+
+@media (max-width: 468px) {
+	nav form.navbar-form {
+		display: none;
+	}
+}
+
+nav + .container {
+	margin-bottom: 1rem;
+}
+
+/* Form Spacing */
+.form-control {
+	margin-bottom: 20px;
+}
+
+.btn {
+	border-radius: 50px;
+}
+
+.btn:hover {
+	cursor: pointer;
 }
