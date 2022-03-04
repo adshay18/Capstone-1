@@ -52,7 +52,7 @@ def logout():
 @app.route('/')
 def home_page():
     '''Shows homepage for app'''
-    response = requests.get(f'{base_url}/search?query=yellow', headers=my_headers)
+    response = requests.get(f'{base_url}/search?query=red', headers=my_headers)
     images = response.json()['photos']
     
     return render_template('home.html', images=images)
@@ -114,3 +114,18 @@ def login_user():
         flash("Invalid credentials, please try again.", 'danger')
 
     return render_template('login.html', form=form)
+
+
+# Search Routes
+
+@app.route('/search')
+def find_images():
+    """Page with matching images to search results"""
+    
+    search = request.args.get('q')
+    if not search:
+        return render_template('browse.html')
+    else:
+        response = requests.get(f'{base_url}/search?query={search}', headers=my_headers)
+        images = response.json()['photos']
+    return render_template('results.html', images=images)
