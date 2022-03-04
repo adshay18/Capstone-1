@@ -1,5 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}picl{% endblock %}
 {% block content %}
-<h1>Welcome to picl</h1>
+    <h1>Welcome to picl</h1>
+    {% if images|length == 0 %}
+        <h3>Sorry, no images found today.</h3>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-sm-9">
+                <div class="row">
+                    {% for image in images %}
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <div class="card">
+                                <img src="{{image['src']['original']}}" class="card-img-top" alt="{{image['alt']}}">
+                                <div class="card-body">
+                                <p class="card-text">This <a href="{{image['url']}}">Photo</a> was taken by <a href="{{image['photographer_url']}}">{{image['photographer']}}</a> on Pexels.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <hr>
+    <span>
+        <a href="https://www.pexels.com">Photos provided by Pexels  
+        </a>
+        <a href="https://www.pexels.com">
+            <img src="https://images.pexels.com/lib/api/pexels.png">
+          </a>
+    </span>
 {% endblock %}

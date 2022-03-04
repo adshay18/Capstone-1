@@ -2,9 +2,11 @@ from curses.ascii import SI
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+import requests
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
 from forms import SignupForm, LoginForm
+from secret import base_url, my_headers
 
 CURR_USER_KEY = "curr_user"
 
@@ -45,10 +47,15 @@ def logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+
+# Make homepage filled with images from pexel api
 @app.route('/')
 def home_page():
     '''Shows homepage for app'''
-    return render_template('home.html')
+    response = requests.get(f'{base_url}/search?query=yellow', headers=my_headers)
+    images = response.json()['photos']
+    
+    return render_template('home.html', images=images)
 
 
 
