@@ -28,7 +28,7 @@ class Like(db.Model):
     image = db.relationship('Image', backref='likes')
     
     def __repr__(self):
-        return f'<Like #{self.id}, User {self.user.username}, Image #{self.image.id}>'
+        return f'<Like #{self.id}, User {self.user_id}, Image #{self.image.id}>'
 
 class Image(db.Model):
     """Image sourced from pexel API"""
@@ -124,6 +124,14 @@ class User(db.Model):
         db.Text,
         nullable=False,
     )
+    
+    bio = db.Column(db.Text)
+    
+    location = db.Column(db.Text)
+    
+    image_url = db.Column(db.Text)
+    
+    banner_url = db.Column(db.Text)
 
     likes = db.relationship(
         'Image', secondary='likes'
@@ -136,7 +144,7 @@ class User(db.Model):
 
 
     @classmethod
-    def signup(cls, username, email, password):
+    def signup(cls, username, email, password, image_url):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -148,6 +156,7 @@ class User(db.Model):
             username=username,
             email=email,
             password=hashed_pwd,
+            image_url=image_url
         )
 
         db.session.add(user)

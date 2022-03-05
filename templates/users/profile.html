@@ -1,0 +1,23 @@
+{% extends 'users/page.html' %}
+{% block user_details %}
+  <div class="col-sm-6">
+    <ul class="list-group" id="images">
+
+      {% for image in images %}
+
+        <li class="list-group-item">
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="card">
+                    <img src="{{image.url}}" class="card-img-top" alt="Free stock photo">
+                    <div class="card-body">
+                    <p class="card-text">This <a href="{{image.url}}">Photo</a> is courtesy of <a href="pexels.com">Pexels</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+      {% endfor %}
+
+    </ul>
+  </div>
+{% endblock %}

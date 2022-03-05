@@ -85,7 +85,8 @@ def signup():
             user = User.signup(
                 username=form.username.data,
                 password=form.password.data,
-                email=form.email.data
+                email=form.email.data,
+                image_url=form.image_url.data
                 )
             db.session.commit()
 
@@ -182,18 +183,10 @@ def show_user(user_id):
     user = User.query.get_or_404(user_id)
 
     # snag images from db
-    images = (User
-                .query
-                .filter(Message.user_id == user_id)
-                .order_by(Message.timestamp.desc())
-                .limit(100)
-                .all())
+    images = user.likes
     
-@app.route('/users/<int:user_id>/likes')
-def show_likes(user_id):
-    '''Show list of images the user likes'''
-    
-    
+    return render_template('users/profile.html', images=images, user=user)
+        
 @app.route('/users/<int:user_id>/boards')
 def show_user_boards(user_id):
     '''Show boards user has created'''
