@@ -22,7 +22,7 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False)
     
-    image_id = db.Column(db.Integer, db.ForeignKey('images.id', ondelete='CASCADE'),
+    pexel_id = db.Column(db.Integer, db.ForeignKey('images.pexel_id', ondelete='CASCADE'),
         nullable=False)
     
     image = db.relationship('Image', backref='likes')

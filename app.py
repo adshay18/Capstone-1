@@ -265,6 +265,9 @@ def show_board(board_id):
 @app.route('/users/like/<int:img_id>', methods=["POST"])
 def add_like(img_id):
     '''Add image to user's likes'''
+    if not g.user:
+        flash('Access denied.', 'danger')
+        return redirect('/')
     
 
 @app.route('/users/unlike/<int:img_id>', methods=["POST"])
