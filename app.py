@@ -53,8 +53,20 @@ def logout():
 @app.route('/')
 def home_page():
     '''Shows homepage for app'''
-    response = requests.get(f'{base_url}/search?query=red', headers=my_headers)
+    response = requests.get(f'{base_url}/search?query=random', headers=my_headers)
     images = response.json()['photos']
+    for image in images:
+        try:
+            pexel_id = image['id']
+            url = image['src']['original']
+            avg_color = image['avg_color']
+            
+            img = Image(pexel_id=pexel_id, url=url, avg_color=avg_color)
+            
+            db.session.add(img)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
     
     return render_template('home.html', images=images)
 
@@ -129,6 +141,18 @@ def find_images():
     else:
         response = requests.get(f'{base_url}/search?query={search}', headers=my_headers)
         images = response.json()['photos']
+        for image in images:
+            try:
+                pexel_id = image['id']
+                url = image['src']['original']
+                avg_color = image['avg_color']
+                
+                img = Image(pexel_id=pexel_id, url=url, avg_color=avg_color)
+                
+                db.session.add(img)
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
     return render_template('results.html', images=images)
 
 @app.route('/browse')
@@ -155,6 +179,15 @@ def list_users():
 def show_user(user_id):
     '''Show user profile'''
     
+    user = User.query.get_or_404(user_id)
+
+    # snag images from db
+    images = (User
+                .query
+                .filter(Message.user_id == user_id)
+                .order_by(Message.timestamp.desc())
+                .limit(100)
+                .all())
     
 @app.route('/users/<int:user_id>/likes')
 def show_likes(user_id):
