@@ -11,6 +11,23 @@
                     <img src="{{image.url}}" class="card-img-top" alt="Free stock photo">
                     <div class="card-body">
                     <p class="card-text">This <a href="{{image.url}}">Photo</a> is courtesy of <a href="pexels.com">Pexels</a>.</p>
+                    {% if image.pexel_id in likes %}
+
+                        <form method="POST" action="/users/unlike/{{image.pexel_id}}" id="unlike-form">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fa fa-thumbs-up"></i> 
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <form action="/users/like/{{image.pexel_id}}" method="POST" id="like-form">
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fa fa-thumbs-up"></i> 
+                            </button>
+                        </form>
+
+                    {% endif %}
                     </div>
                 </div>
             </div>
