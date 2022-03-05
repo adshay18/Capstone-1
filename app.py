@@ -1,3 +1,4 @@
+from crypt import methods
 from curses.ascii import SI
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
@@ -48,7 +49,7 @@ def logout():
         del session[CURR_USER_KEY]
 
 
-# Make homepage filled with images from pexel api
+####################### Make homepage filled with images from pexel api ########################
 @app.route('/')
 def home_page():
     '''Shows homepage for app'''
@@ -59,7 +60,7 @@ def home_page():
 
 
 
-# Sign up, login, and logout routes
+################### Sign up, login, and logout routes ############################
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -116,7 +117,7 @@ def login_user():
     return render_template('login.html', form=form)
 
 
-# Search Routes
+####################### Search Routes ################################
 
 @app.route('/search')
 def find_images():
@@ -129,3 +130,81 @@ def find_images():
         response = requests.get(f'{base_url}/search?query={search}', headers=my_headers)
         images = response.json()['photos']
     return render_template('results.html', images=images)
+
+
+####################### User routes ######################################
+
+@app.route('/users')
+def list_users():
+    '''Listing all users'''
+    
+    
+@app.route('/users/<int:user_id>')
+def show_user(user_id):
+    '''Show user profile'''
+    
+    
+@app.route('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    '''Show list of images the user likes'''
+    
+    
+@app.route('/users/<int:user_id>/boards')
+def show_user_boards(user_id):
+    '''Show boards user has created'''
+    
+
+@app.route('/users/<int:user_id>/fav_boards')
+def show_favorites(user_id):
+    '''Show boards this user has favorited'''
+    
+
+#################### Board routes   ####################################
+@app.route('/boards')
+def show_boards():
+    '''List all boards'''
+
+
+@app.route('/boards/<int:board_id>')
+def show_board(board_id):
+    '''Show board page'''
+    
+
+    
+################# Adding/removing likes/boards/fav_boards ############################   
+ 
+@app.route('/users/like/<int:img_id>', methods=["POST"])
+def add_like(img_id):
+    '''Add image to user's likes'''
+    
+
+@app.route('/users/unlike/<int:img_id>', methods=["POST"])
+def remove_like(img_id):
+    '''Remove image from user's likes'''
+    
+@app.route('/users/add_board', methods=["POST"])
+def create_board():
+    '''Create new board for current user'''
+    
+    
+@app.route('/users/delete_board/<int:board_id>', methods=["POST"])
+def delete_board():
+    '''Delete board for current user'''
+    
+@app.route('/boards/<int:board_id>/add/<int:img_id>', methods=["POST"])
+def add_image_to_board(board_id, img_id):
+    '''Handle adding an image to a board'''
+    
+
+@app.route('/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
+def remove_image_from_board(board_id, img_id):
+    '''Handle removing an image from a board'''
+    
+    
+@app.route('/users/favorite/<int:board_id>', methods=["POST"])
+def add_fav_board(board_id):
+    '''Add board to list of current user's favorite boards'''
+    
+@app.route('/users/unfavorite/<int:board_id>', methods=["POST"])
+def remove_fav_board(board_id):
+    '''Remove board from list of current user's favorite boards'''
