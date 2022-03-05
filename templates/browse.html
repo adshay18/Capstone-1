@@ -4,13 +4,28 @@
     <h1>What are you looking for?</h1>
     <ul>
         <li>
-            users
+            <form class="navbar-form navbar-right" action="/users">
+                <input name="u" class="form-control" placeholder="Search users" id="user-search">
+                <button class="btn btn-default">
+                  <span class="fa fa-search"></span>
+                </button>
+              </form>
         </li>
         <li>
-            images
+            <form class="navbar-form navbar-right" action="/search">
+                <input name="q" class="form-control" placeholder="Search images" id="image-search">
+                <button class="btn btn-default">
+                  <span class="fa fa-search"></span>
+                </button>
+              </form>
         </li>
         <li>
-            boards
+            <form class="navbar-form navbar-right" action="/boards">
+                <input name="b" class="form-control" placeholder="Search boards" id="board-search">
+                <button class="btn btn-default">
+                  <span class="fa fa-search"></span>
+                </button>
+              </form>
         </li>
     </ul>
 {% endblock %}

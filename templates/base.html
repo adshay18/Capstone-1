@@ -30,9 +30,11 @@
             </li>
             {% endif %}
             {% if not g.user %}
+            <li><a href="/browse">Browse</a></li>
             <li><a href="/signup">Sign up</a></li>
             <li><a href="/login">Log in</a></li>
             {% else %}
+            <li><a href="/browse">Browse</a></li>
             <li>
               <a href="/users/{{ g.user.id }}">
                 {{g.user.username}}

@@ -131,6 +131,10 @@ def find_images():
         images = response.json()['photos']
     return render_template('results.html', images=images)
 
+@app.route('/browse')
+def show_browse_page():
+    '''Page with different search bars'''
+    return render_template('browse.html')
 
 ####################### User routes ######################################
 
@@ -138,6 +142,14 @@ def find_images():
 def list_users():
     '''Listing all users'''
     
+    search = request.args.get('u')
+
+    if not search:
+        users = User.query.all()
+    else:
+        users = User.query.filter(User.username.like(f"%{search}%")).all()
+
+    return render_template('users/index.html', users=users)
     
 @app.route('/users/<int:user_id>')
 def show_user(user_id):
@@ -163,7 +175,15 @@ def show_favorites(user_id):
 @app.route('/boards')
 def show_boards():
     '''List all boards'''
+    
+    search = request.args.get('b')
 
+    if not search:
+        boards = Board.query.all()
+    else:
+        boards = Board.query.filter(Board.name.like(f"%{search}%")).all()
+
+    return render_template('boards/index.html', boards=boards)
 
 @app.route('/boards/<int:board_id>')
 def show_board(board_id):
