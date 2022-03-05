@@ -224,6 +224,21 @@ def profile():
 
             flash("Incorrect password.", 'danger')
         return render_template('users/edit.html', form=form, user=g.user)
+    
+@app.route('/users/delete', methods=["POST"])
+def delete_user():
+    """Delete user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect("/signup")
 
 #################### Board routes   ####################################
 @app.route('/boards')
