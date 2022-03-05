@@ -14,6 +14,23 @@
                                 <img src="{{image['src']['original']}}" class="card-img-top" alt="{{image['alt']}}">
                                 <div class="card-body">
                                 <p class="card-text">This <a href="{{image['url']}}">Photo</a> was taken by <a href="{{image['photographer_url']}}">{{image['photographer']}}</a> on Pexels.</p>
+                                {% if image['id'] in likes %}
+
+                                    <form method="POST" action="/users/unlike/{{image['id']}}" id="unlike-form">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-thumbs-up"></i> 
+                                        </button>
+                                    </form>
+
+                                {% else %}
+
+                                    <form action="/users/like/{{image['id']}}" method="POST" id="like-form">
+                                        <button class="btn btn-sm btn-secondary">
+                                            <i class="fa fa-thumbs-up"></i> 
+                                        </button>
+                                    </form>
+
+                                {% endif %}
                                 </div>
                             </div>
                         </div>

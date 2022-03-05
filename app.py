@@ -28,13 +28,19 @@ connect_db(app)
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
-
+    
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
 
     else:
         g.user = None
 
+def store_search():
+    """If a user makes a search, add it to session"""
+    session['SEARCH_TERM'] = request.args.get('q')
+    
+def delete_search():
+    session['SEARCH_TERM'] = None
 
 def login(user):
     """Log in user."""
@@ -44,7 +50,7 @@ def login(user):
 
 def logout():
     """Logout user."""
-
+    delete_search()
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
@@ -55,6 +61,7 @@ def home_page():
     '''Shows homepage for app'''
     
     if g.user:
+        delete_search()
         response = requests.get(f'{base_url}/search?query=random', headers=my_headers)
         images = response.json()['photos']
         for image in images:
@@ -148,6 +155,7 @@ def find_images():
     if not search:
         return render_template('browse.html')
     else:
+        store_search()
         response = requests.get(f'{base_url}/search?query={search}', headers=my_headers)
         images = response.json()['photos']
         for image in images:
@@ -162,7 +170,11 @@ def find_images():
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
-    return render_template('results.html', images=images)
+                
+            user_likes = Like.query.filter(Like.user_id==g.user.id).all()
+            likes = [like.pexel_id for like in user_likes]
+            user = g.user
+    return render_template('results.html', images=images, likes=likes, user=user)
 
 @app.route('/browse')
 def show_browse_page():
@@ -187,7 +199,7 @@ def list_users():
 @app.route('/users/<int:user_id>')
 def show_user(user_id):
     '''Show user profile'''
-    
+    delete_search()
     user = User.query.get_or_404(user_id)
 
     # snag images from db
@@ -282,8 +294,10 @@ def add_like(img_id):
     db.session.add(like)
     db.session.commit()
     
-    return redirect('/')
-
+    if not session['SEARCH_TERM']:
+        return redirect('/')
+    elif session['SEARCH_TERM']:
+        return redirect(f"/search?q={session['SEARCH_TERM']}")
 @app.route('/users/unlike/<int:img_id>', methods=["POST"])
 def remove_like(img_id):
     '''Remove image from user's likes'''
@@ -295,7 +309,10 @@ def remove_like(img_id):
     like = Like.query.filter(Like.pexel_id==img_id, Like.user_id==user.id).first()
     db.session.delete(like)
     db.session.commit()
-    return redirect('/')
+    if not session['SEARCH_TERM']:
+        return redirect('/')
+    elif session['SEARCH_TERM']:
+        return redirect(f"/search?q={session['SEARCH_TERM']}")
 @app.route('/users/add_board', methods=["POST"])
 def create_board():
     '''Create new board for current user'''
