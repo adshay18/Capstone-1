@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 import requests
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
-from forms import SignupForm, LoginForm
+from forms import SignupForm, LoginForm, UserEditForm
 from secret import base_url, my_headers
 
 CURR_USER_KEY = "curr_user"
@@ -196,6 +196,34 @@ def show_user_boards(user_id):
 def show_favorites(user_id):
     '''Show boards this user has favorited'''
     
+@app.route('/users/edit', methods=["GET", "POST"])
+def profile():
+    """Update profile for current user."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    elif g.user:
+        form = UserEditForm(obj=g.user)
+        
+        if form.validate_on_submit():
+            user = User.authenticate(g.user.username,
+                                    form.password.data)
+
+            if user:
+                user.username = form.username.data
+                user.email = form.email.data
+                user.image_url = form.image_url.data
+                user.banner_url = form.banner_url.data
+                user.bio = form.bio.data
+                user.location = form.location.data
+                db.session.add(user)
+                db.session.commit()
+                
+                flash(f"Profile updated!", "success")
+                return redirect(f"/users/{g.user.id}")
+
+            flash("Incorrect password.", 'danger')
+        return render_template('users/edit.html', form=form, user=g.user)
 
 #################### Board routes   ####################################
 @app.route('/boards')
