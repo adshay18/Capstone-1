@@ -53,22 +53,30 @@ def logout():
 @app.route('/')
 def home_page():
     '''Shows homepage for app'''
-    response = requests.get(f'{base_url}/search?query=random', headers=my_headers)
-    images = response.json()['photos']
-    for image in images:
-        try:
-            pexel_id = image['id']
-            url = image['src']['original']
-            avg_color = image['avg_color']
-            
-            img = Image(pexel_id=pexel_id, url=url, avg_color=avg_color)
-            
-            db.session.add(img)
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
     
-    return render_template('home.html', images=images)
+    if g.user:
+        response = requests.get(f'{base_url}/search?query=random', headers=my_headers)
+        images = response.json()['photos']
+        for image in images:
+            try:
+                pexel_id = image['id']
+                url = image['src']['original']
+                avg_color = image['avg_color']
+                
+                img = Image(pexel_id=pexel_id, url=url, avg_color=avg_color)
+                
+                db.session.add(img)
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+        
+        user_likes = Like.query.filter(Like.user_id==g.user.id).all()
+        likes = [like.pexel_id for like in user_likes]
+        user = g.user
+        
+        return render_template('home.html', images=images, user=user, likes=likes)
+    else:
+        return render_template('home-visitor.html')
 
 
 
@@ -267,13 +275,27 @@ def add_like(img_id):
     '''Add image to user's likes'''
     if not g.user:
         flash('Access denied.', 'danger')
-        return redirect('/')
+        return redirect('/login')
+    img = Image.query.filter(Image.pexel_id==img_id).first()
+    user = g.user
+    like = Like(user_id=user.id, pexel_id=img_id)
+    db.session.add(like)
+    db.session.commit()
     
+    return redirect('/')
 
 @app.route('/users/unlike/<int:img_id>', methods=["POST"])
 def remove_like(img_id):
     '''Remove image from user's likes'''
-    
+    if not g.user:
+        flash('Access denied.', 'danger')
+        return redirect('/login')
+
+    user = g.user
+    like = Like.query.filter(Like.pexel_id==img_id, Like.user_id==user.id).first()
+    db.session.delete(like)
+    db.session.commit()
+    return redirect('/')
 @app.route('/users/add_board', methods=["POST"])
 def create_board():
     '''Create new board for current user'''
