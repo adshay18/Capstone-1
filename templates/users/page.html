@@ -12,19 +12,19 @@
           <li class="stat">
             <p class="small">Boards</p>
             <h4>
-              <a href="/users/{{ user.id }}">{{ user.boards | length }}</a>
+              <a href="/users/{{ user.id }}/boards">{{ user.boards | length }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Favorite Boards</p>
             <h4>
-              <a href="/users/{{ user.id }}/following">{{ user.fav_boards | length }}</a>
+              <a href="/users/{{ user.id }}/fav_boards">{{ user.fav_boards | length }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Likes</p>
             <h4>
-              <span>{{ user.likes | length }}</span>
+              <a href="/users/{{user.id}}">{{ user.likes | length }}</a>
             </h4>
           </li>
           <div class="ml-auto">
@@ -33,6 +33,7 @@
             <form method="POST" action="/users/delete" class="form-inline">
               <button class="btn btn-outline-danger ml-2">Delete Profile</button>
             </form>
+            <a href="/users/add_board" class="btn btn-outline-success">New Board</a>
             {% endif %}
           </div>
         </ul>

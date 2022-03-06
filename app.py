@@ -1,12 +1,10 @@
-from crypt import methods
-from curses.ascii import SI
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
-from forms import SignupForm, LoginForm, UserEditForm
+from forms import SignupForm, LoginForm, UserEditForm, NewBoardForm
 from secret import base_url, my_headers
 
 CURR_USER_KEY = "curr_user"
@@ -214,11 +212,7 @@ def show_user(user_id):
     # snag images from db
     images = user.likes
     
-    return render_template('users/profile.html', images=images, user=user, likes=likes)
-        
-@app.route('/users/<int:user_id>/boards')
-def show_user_boards(user_id):
-    '''Show boards user has created'''
+    return render_template('users/profile.html', images=images, user=user, likes=likes)  
     
 
 @app.route('/users/<int:user_id>/fav_boards')
@@ -264,6 +258,7 @@ def delete_user():
 
     logout()
     off_user_page()
+    delete_search()
     db.session.delete(g.user)
     db.session.commit()
 
@@ -283,11 +278,32 @@ def show_boards():
 
     return render_template('boards/index.html', boards=boards)
 
-@app.route('/boards/<int:board_id>')
-def show_board(board_id):
-    '''Show board page'''
+@app.route('/users/<int:user_id>/boards')
+def show_boards_for_user(user_id):
+    '''Show all boards for a given user'''
     off_user_page()
+    delete_search()
+    if not g.user:
+        flash('Access denied.', 'danger')
+        return redirect('/login')
+        
+    boards = Board.query.filter(Board.user_id==user_id)
+    user = g.user
+    
+    return render_template('boards/list.html', user=user, boards=boards)
+    
+    
+@app.route('/users/<int:user_id>/boards/<int:board_id>')
+def show_board(user_id, board_id):
+    '''Show details for a specific board'''
+    off_user_page()
+    delete_search()
 
+@app.route('/users/<int:user_id>/fav_boards')
+def show_user_favorites(user_id):
+    '''Show all of a user's favorite boards'''
+    off_user_page()
+    delete_search()
     
 ################# Adding/removing likes/boards/fav_boards ############################   
  
@@ -330,9 +346,31 @@ def remove_like(img_id):
         return redirect(f"/search?q={session['SEARCH_TERM']}")
     
     
-@app.route('/users/add_board', methods=["POST"])
+@app.route('/users/add_board', methods=["GET", "POST"])
 def create_board():
     '''Create new board for current user'''
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    elif g.user:
+        form = NewBoardForm()
+        off_user_page()
+        if form.validate_on_submit():
+            
+            name = form.name.data
+            description = form.description.data
+            user_id = g.user.id
+            
+            board = Board(name=name, description=description, user_id=user_id)
+
+            db.session.add(board)
+            db.session.commit()
+            
+            flash(f"Board created!", "success")
+            return redirect(f"/users/{g.user.id}/boards")
+
+            
+        return render_template('boards/create.html', form=form, user=g.user)
     
     
 @app.route('/users/delete_board/<int:board_id>', methods=["POST"])

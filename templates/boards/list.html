@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}picl{% endblock %}
+{% block content %}
+    <h1>Results</h1>
+    {% if user.boards|length == 0 %}
+        <h3>Sorry, no boards found today.</h3>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-sm-9">
+                <div class="row">
+                    <ul>
+                    {% for board in boards %}
+                        <li>{{board.name}} - {{board.description}}</li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

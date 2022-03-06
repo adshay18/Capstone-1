@@ -27,3 +27,8 @@ class UserEditForm(FlaskForm):
     location = StringField('Location - optional')
     
     password = PasswordField('Password', validators=[Length(min=6)])
+    
+class NewBoardForm(FlaskForm):
+    """Form to create a new board"""
+    name = StringField('Board Name', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
