@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
-{% block title %}picl{% endblock %}
-{% block content %}
-    <h1>Results</h1>
+{% extends 'users/page.html' %}
+{% block user_details %}
+    <h1>{{user.username}}'s boards</h1>
     {% if user.boards|length == 0 %}
         <h3>Sorry, no boards found today.</h3>
     {% else %}
@@ -10,7 +9,7 @@
                 <div class="row">
                     <ul>
                     {% for board in boards %}
-                        <li>{{board.name}} - {{board.description}}</li>
+                        <li><a href="/users/{{user.id}}/boards/{{board.id}}">{{board.name}}</a> - {{board.description}}</li>
                     {% endfor %}
                 </ul>
                 </div>

@@ -72,7 +72,7 @@ class Board_Image(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('boards.id', ondelete='CASCADE'),
         nullable=False)
     
-    image_id = db.Column(db.Integer, db.ForeignKey('images.id', ondelete='CASCADE'),
+    image_id = db.Column(db.Integer, db.ForeignKey('images.pexel_id', ondelete='CASCADE'),
         nullable=False)
     board = db.relationship('Board', backref='board_images')
     images = db.relationship('Image', backref='board_images')

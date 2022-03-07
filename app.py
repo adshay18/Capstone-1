@@ -214,10 +214,6 @@ def show_user(user_id):
     
     return render_template('users/profile.html', images=images, user=user, likes=likes)  
     
-
-@app.route('/users/<int:user_id>/fav_boards')
-def show_favorites(user_id):
-    '''Show boards this user has favorited'''
     
 @app.route('/users/edit', methods=["GET", "POST"])
 def profile():
@@ -288,7 +284,7 @@ def show_boards_for_user(user_id):
         return redirect('/login')
         
     boards = Board.query.filter(Board.user_id==user_id)
-    user = g.user
+    user = User.query.get_or_404(user_id)
     
     return render_template('boards/list.html', user=user, boards=boards)
     
@@ -298,12 +294,20 @@ def show_board(user_id, board_id):
     '''Show details for a specific board'''
     off_user_page()
     delete_search()
-
+    user = User.query.get_or_404(user_id)
+    board = Board.query.get_or_404(board_id)
+    board_images = Board_Image.query.filter(Board_Image.board_id==board_id).all()
+    images = [board_image.images for board_image in board_images]
+    user_likes = Like.query.filter(Like.user_id==g.user.id).all()
+    likes = [like.pexel_id for like in user_likes]
+    
+    return render_template('boards/details.html', user=user, board=board, images=images, likes=likes)
 @app.route('/users/<int:user_id>/fav_boards')
 def show_user_favorites(user_id):
     '''Show all of a user's favorite boards'''
     off_user_page()
     delete_search()
+    return ("user's favorite boards")
     
 ################# Adding/removing likes/boards/fav_boards ############################   
  
@@ -373,19 +377,29 @@ def create_board():
         return render_template('boards/create.html', form=form, user=g.user)
     
     
-@app.route('/users/delete_board/<int:board_id>', methods=["POST"])
-def delete_board():
+@app.route('/users/<int:user_id>/delete_board/<int:board_id>', methods=["POST"])
+def delete_board(board_id, user_id):
     '''Delete board for current user'''
+    board = Board.query.get_or_404(board_id)
+    db.session.delete(board)
+    db.session.commit()
+    
+    return redirect(f'/users/{user_id}/boards')
+    
     
 @app.route('/boards/<int:board_id>/add/<int:img_id>', methods=["POST"])
 def add_image_to_board(board_id, img_id):
     '''Handle adding an image to a board'''
     
 
-@app.route('/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
-def remove_image_from_board(board_id, img_id):
+@app.route('/users/<int:user_id>/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
+def remove_image_from_board(user_id, board_id, img_id):
     '''Handle removing an image from a board'''
+    board_image = Board_Image.query.filter(Board_Image.board_id==board_id, Board_Image.image_id==img_id).first()
+    db.session.delete(board_image)
+    db.session.commit()
     
+    return redirect(f'/users/{user_id}/boards/{board_id}')
     
 @app.route('/users/favorite/<int:board_id>', methods=["POST"])
 def add_fav_board(board_id):
