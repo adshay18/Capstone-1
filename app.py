@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 import requests
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
-from forms import SignupForm, LoginForm, UserEditForm, NewBoardForm
+from forms import SignupForm, LoginForm, UserEditForm, NewBoardForm, AddImageForm
 from secret import base_url, my_headers
 
 CURR_USER_KEY = "curr_user"
@@ -81,11 +81,14 @@ def home_page():
             except IntegrityError:
                 db.session.rollback()
         
-        user_likes = Like.query.filter(Like.user_id==g.user.id).all()
+        user_likes = Like.query.filter(Like.user_id==g.user.id)
         likes = [like.pexel_id for like in user_likes]
         user = g.user
         
-        return render_template('home.html', images=images, user=user, likes=likes)
+        form = AddImageForm()
+        form.board_id.choices = [(board.id, board.name) for board in user.boards]
+        
+        return render_template('home.html', images=images, user=user, likes=likes, form=form)
     else:
         return render_template('home-visitor.html')
 
@@ -178,7 +181,11 @@ def find_images():
     user_likes = Like.query.filter(Like.user_id==g.user.id).all()
     likes = [like.pexel_id for like in user_likes]
     user = g.user
-    return render_template('results.html', images=images, likes=likes, user=user)
+    
+    form = AddImageForm()
+    form.board_id.choices = [(board.id, board.name) for board in user.boards]
+        
+    return render_template('results.html', images=images, likes=likes, user=user, form=form)
 
 @app.route('/browse')
 def show_browse_page():
@@ -211,8 +218,10 @@ def show_user(user_id):
     likes = [like.pexel_id for like in user_likes]
     # snag images from db
     images = user.likes
+    form = AddImageForm()
+    form.board_id.choices = [(board.id, board.name) for board in user.boards]
     
-    return render_template('users/profile.html', images=images, user=user, likes=likes)  
+    return render_template('users/profile.html', images=images, user=user, likes=likes, form=form)  
     
     
 @app.route('/users/edit', methods=["GET", "POST"])
@@ -301,7 +310,12 @@ def show_board(user_id, board_id):
     user_likes = Like.query.filter(Like.user_id==g.user.id).all()
     likes = [like.pexel_id for like in user_likes]
     
-    return render_template('boards/details.html', user=user, board=board, images=images, likes=likes)
+    form = AddImageForm()
+    form.board_id.choices = [(board.id, board.name) for board in user.boards]
+    
+    return render_template('boards/details.html', user=user, board=board, images=images, likes=likes, form=form)
+
+
 @app.route('/users/<int:user_id>/fav_boards')
 def show_user_favorites(user_id):
     '''Show all of a user's favorite boards'''
@@ -380,6 +394,10 @@ def create_board():
 @app.route('/users/<int:user_id>/delete_board/<int:board_id>', methods=["POST"])
 def delete_board(board_id, user_id):
     '''Delete board for current user'''
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
     board = Board.query.get_or_404(board_id)
     board_images = Board_Image.query.filter(Board_Image.board_id==board_id).delete()
     
@@ -389,14 +407,31 @@ def delete_board(board_id, user_id):
     return redirect(f'/users/{user_id}/boards')
     
     
-@app.route('/boards/<int:board_id>/add/<int:img_id>', methods=["POST"])
-def add_image_to_board(board_id, img_id):
+@app.route('/users/<int:user_id>/boards/add/<int:img_id>', methods=["POST"])
+def add_image_to_board(user_id, img_id):
     '''Handle adding an image to a board'''
+    form = AddImageForm()
+    user = g.user
+    form.board_id.choices = [(board.id, board.name) for board in user.boards]
+    if form.validate_on_submit():
+        
+        board_id = form.board_id.data
+        image_id = img_id
+        
+        board_image = Board_Image(board_id=board_id, image_id=image_id)
+        db.session.add(board_image)
+        db.session.commit()
+        
+        flash(f'Added to board!', 'success')
+        return redirect('/')
     
+    flash('Something went wrong.', 'primary')
+    return redirect('/')
 
 @app.route('/users/<int:user_id>/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
 def remove_image_from_board(user_id, board_id, img_id):
     '''Handle removing an image from a board'''
+    
     board_image = Board_Image.query.filter(Board_Image.board_id==board_id, Board_Image.image_id==img_id).first()
     db.session.delete(board_image)
     db.session.commit()

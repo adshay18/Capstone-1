@@ -1,6 +1,6 @@
 from io import StringIO
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 
 class SignupForm(FlaskForm):
@@ -23,7 +23,7 @@ class UserEditForm(FlaskForm):
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     image_url = StringField('Profile Image URL - optional')
     banner_url = StringField('Banner Image URL - optional')
-    bio = StringField('Bio - optional')
+    bio = TextAreaField('Bio - optional')
     location = StringField('Location - optional')
     
     password = PasswordField('Password', validators=[Length(min=6)])
@@ -31,4 +31,8 @@ class UserEditForm(FlaskForm):
 class NewBoardForm(FlaskForm):
     """Form to create a new board"""
     name = StringField('Board Name', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    
+class AddImageForm(FlaskForm):
+    """Add image to board"""
+    board_id = SelectField("Add to Board")
