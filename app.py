@@ -321,7 +321,14 @@ def show_user_favorites(user_id):
     '''Show all of a user's favorite boards'''
     off_user_page()
     delete_search()
-    return ("user's favorite boards")
+    if not g.user:
+        flash('Access denied.', 'danger')
+        return redirect('/login')
+    
+    user = User.query.get_or_404(user_id)
+    boards = user.fav_boards
+    
+    return render_template('boards/list-favorites.html', user=user, boards=boards)
     
 ################# Adding/removing likes/boards/fav_boards ############################   
  
