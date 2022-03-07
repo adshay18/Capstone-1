@@ -445,10 +445,28 @@ def remove_image_from_board(user_id, board_id, img_id):
     
     return redirect(f'/users/{user_id}/boards/{board_id}')
     
-@app.route('/users/favorite/<int:board_id>', methods=["POST"])
-def add_fav_board(board_id):
+@app.route('/users/<int:user_id>/favorite/<int:board_id>', methods=["POST"])
+def add_fav_board(user_id, board_id):
     '''Add board to list of current user's favorite boards'''
+    board_owner = user_id
+    board = board_id
+    user = g.user
+    fav = Fav_Board(user_id=g.user.id, board_id=board)
+    db.session.add(fav)
+    db.session.commit()
     
-@app.route('/users/unfavorite/<int:board_id>', methods=["POST"])
-def remove_fav_board(board_id):
+    return redirect(f'/users/{board_owner}/boards/{board}')
+    
+@app.route('/users/<int:user_id>/unfavorite/<int:board_id>', methods=["POST"])
+def remove_fav_board(user_id, board_id):
     '''Remove board from list of current user's favorite boards'''
+    board_owner = user_id
+    board = board_id
+    user = g.user
+    
+    fav = Fav_Board.query.filter(Fav_Board.board_id==board, Fav_Board.user_id==g.user.id).first()
+    
+    db.session.delete(fav)
+    db.session.commit()
+    
+    return redirect(f'/users/{board_owner}/boards/{board}')
