@@ -381,6 +381,8 @@ def create_board():
 def delete_board(board_id, user_id):
     '''Delete board for current user'''
     board = Board.query.get_or_404(board_id)
+    board_images = Board_Image.query.filter(Board_Image.board_id==board_id).delete()
+    
     db.session.delete(board)
     db.session.commit()
     
