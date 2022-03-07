@@ -22,3 +22,8 @@ my_headers = {'Authorization' : f'Bearer {API_key}'}
 (venv) $ pip install -rf requirements.txt
 ```
 - May need to install manually depending on your version of python and pip
+
+- Run app:
+```
+(venv) $ flask run
+```
