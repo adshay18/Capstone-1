@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
+import math
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
 from forms import SignupForm, LoginForm, UserEditForm, NewBoardForm, AddImageForm
@@ -163,8 +164,18 @@ def find_images():
         return render_template('browse.html')
     else:
         store_search()
-        response = requests.get(f'{base_url}/search?query={search}', headers=my_headers)
+        response = requests.get(f'{base_url}/search?query={search}&per_page=21&page=1', headers=my_headers)
         images = response.json()['photos']
+        num_responses = response.json()['total_results']
+        num_pages = math.ceil(num_responses/21)
+        next_page = requests.get(response.json()['next_page']).json()['photos'][0]
+        print('------------------')
+        print('------------------')
+        print('------------------')
+        print('------------------')
+        print('------------------')
+        print('------------------')
+        print(num_pages)
         for image in images:
             try:
                 pexel_id = image['id']
