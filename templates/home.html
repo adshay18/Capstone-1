@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}picl{% endblock %}
 {% block content %}
-    <div class="home-header container-fluid justify-content-center">
+    <div class="home-header container-fluid justify-content-center text-success">
         <h1>Welcome to picl</h1>
         <h3>Let's get picling</h3>
     </div>
@@ -10,18 +10,16 @@
     {% else %}
         <div class="row justify-content-center">
             <div class="col-sm-9">
-                <div class="row align-items-center">
+                <div class="row align-items-center my-1">
                     {% for image in images %}
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="card">
                                 <img src="{{image['src']['original']}}" class="card-img-top" alt="{{image['alt']}}">
                                 <div class="card-body">
-                                <p class="card-text">This <a href="{{image['url']}}">Photo</a> was taken by <a href="{{image['photographer_url']}}">{{image['photographer']}}</a> on Pexels.</p>
-
                                 {% if image['id'] in likes %}
 
                                     <form method="POST" action="/users/unlike/{{image['id']}}" id="unlike-form">
-                                        <button class="btn btn-sm btn-primary">
+                                        <button class="btn btn-sm btn-primary mb-1">
                                             <i class="fa fa-thumbs-up"></i> 
                                         </button>
                                     </form>
@@ -29,14 +27,14 @@
                                 {% else %}
 
                                     <form action="/users/like/{{image['id']}}" method="POST" id="like-form">
-                                        <button class="btn btn-sm btn-secondary">
+                                        <button class="btn btn-sm btn-secondary mb-1">
                                             <i class="fa fa-thumbs-up"></i> 
                                         </button>
                                     </form>
 
                                 {% endif %}
                                 
-                                <form action="/users/{{user.id}}/boards/add/{{image['id']}}" method="POST" id="board_form">
+                                <form  action="/users/{{user.id}}/boards/add/{{image['id']}}" method="POST" id="board_form">
                                     {{ form.hidden_tag() }}
                             
                                     {% for field in form if field.widget.input_type != 'hidden' %}
@@ -46,9 +44,10 @@
                                       {{ field(placeholder=field.label.text, class="form-control") }}
                                     {% endfor %}
                             
-                                    <button class="btn btn-primary btn-block btn-lg">Add to Board</button>
+                                    <button class="btn btn-success btn-block btn-md mt-0">picl it</button>
                                   </form>
-                                
+                                  <p class="card-text">This <a href="{{image['url']}}">Photo</a> was taken by <a href="{{image['photographer_url']}}">{{image['photographer']}}</a> on Pexels.</p>
+                    
                                 </div>
                             </div>
                         </div>

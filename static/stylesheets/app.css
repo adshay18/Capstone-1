@@ -15,6 +15,7 @@
 	color: white;
 	font-size: 13px;
 	font-weight: bold;
+	text-decoration: none;
 }
 
 .navbar a:hover {
@@ -314,8 +315,8 @@ body {
 	color: rgb(239, 255, 247);
 }
 
-.card {
-	color: black;
+a {
+	text-decoration: none;
 }
 
 .home-header {
@@ -413,4 +414,16 @@ body {
 
 .footer-img {
 	height: 20px;
+}
+
+/* Card styling */
+
+.card {
+	background-color: rgb(36, 36, 36);
+	color: white;
+	font-size: 8px;
+}
+
+.card-text {
+	display: none;
 }

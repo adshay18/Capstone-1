@@ -67,7 +67,7 @@ def home_page():
     
     if g.user:
         delete_search()
-        response = requests.get(f'{base_url}/search?query=random', headers=my_headers)
+        response = requests.get(f'{base_url}/curated', headers=my_headers)
         images = response.json()['photos']
         for image in images:
             try:
@@ -168,7 +168,7 @@ def find_images():
         images = response.json()['photos']
         num_responses = response.json()['total_results']
         num_pages = math.ceil(num_responses/21)
-        next_page = requests.get(response.json()['next_page']).json()['photos'][0]
+        
         print('------------------')
         print('------------------')
         print('------------------')
