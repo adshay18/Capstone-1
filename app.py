@@ -159,6 +159,9 @@ def login_user():
 def find_images():
     """Page with matching images to search results"""
     off_user_page()
+    if not g.user:
+        flash("Please login or create an account to access free photos.", "danger")
+        return redirect("/")
     search = request.args.get('q')
     if not search:
         return render_template('browse.html')

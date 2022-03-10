@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}picl{% endblock %}
 {% block content %}
-  <div class="home-hero">
+  <div class="container-fluid">
     <h1>What's Happening?</h1>
     <h4>New to picl?</h4>
     <p>Sign up now to search for thousands of free stock images on your timeline!</p>
     <a href="/signup" class="btn btn-primary">Sign up</a>
+  </div>
+  <br>
+  <br>
+  <div class="container-fluid">
+    <h4>Already a member?</h4>
+    <p>Login to get pack to picling.</p>
+    <a href="/login" class="btn btn-success">Login</a>
   </div>
 {% endblock %}
