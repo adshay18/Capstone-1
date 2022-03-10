@@ -199,7 +199,7 @@ def find_images():
     form = AddImageForm()
     form.board_id.choices = [(board.id, board.name) for board in user.boards]
         
-    return render_template('results.html', images=images, likes=likes, user=user, form=form)
+    return render_template('results.html', images=images, likes=likes, user=user, form=form, search=search)
 
 @app.route('/browse')
 def show_browse_page():

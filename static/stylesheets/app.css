@@ -276,6 +276,7 @@ body {
 
 a {
 	text-decoration: none;
+	color: #0f772e;
 }
 
 .home-header {
@@ -386,4 +387,10 @@ a {
 
 .card-text {
 	display: none;
+}
+
+/* Form Page styling */
+
+.form {
+	background-color: rgb(48, 48, 48);
 }
