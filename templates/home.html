@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}picl{% endblock %}
 {% block content %}
-    <h1>Welcome to picl</h1>
+    <div class="home-header container-fluid justify-content-center">
+        <h1>Welcome to picl</h1>
+        <h3>Let's get picling</h3>
+    </div>
     {% if images|length == 0 %}
         <h3>Sorry, no images found today.</h3>
     {% else %}
         <div class="row justify-content-center">
             <div class="col-sm-9">
-                <div class="row">
+                <div class="row align-items-center">
                     {% for image in images %}
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="card">

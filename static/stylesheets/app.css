@@ -2,7 +2,7 @@
 
 .navbar {
 	background-color: rgb(65, 65, 65);
-	height: 80px;
+
 	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 	margin-bottom: 1rem;
 	position: fixed;
@@ -82,13 +82,11 @@ nav form.navbar-form {
 	box-shadow: none;
 	border: 2px solid #007bff;
 }
-
 /* change navbar on forms */
-
-/* .form > .navbar {
+.form > .navbar {
 	background-image: url("/static/images/nav-bg.png");
 	background-size: 100% 100%;
-} */
+}
 
 .form .navbar-header {
 	margin: 0 auto;
@@ -308,9 +306,22 @@ nav + .container {
 	background: rgba(255, 255, 255, 0.3);
 }
 
+/* Generic Styling */
+
 body {
-	padding-top: 75px;
+	padding-top: 95px;
 	background-color: rgb(48, 48, 48);
+	color: rgb(239, 255, 247);
+}
+
+.card {
+	color: black;
+}
+
+.home-header {
+	align-items: center;
+	text-align: center;
+	color: rgba(255, 255, 255, 0.3);
 }
 
 /* Footer styling */
