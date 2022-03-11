@@ -426,3 +426,34 @@ a:hover {
 		margin-left: 12%;
 	}
 }
+
+/* Browse page formatting */
+#list.form-control {
+	border-radius: 20px;
+	margin-bottom: 0;
+	width: 100%;
+	font-size: 13px;
+	padding-right: 28px;
+	box-sizing: border-box;
+}
+
+#list.form-control + .btn {
+	position: absolute;
+	right: 27px;
+	top: 2px;
+	bottom: 4px;
+	z-index: 1;
+	padding: 0;
+	color: #66757f;
+}
+
+#list.form-control + .btn:active,
+#list.form-control + .btn:focus {
+	box-shadow: none;
+}
+
+#list:active,
+#list:focus {
+	box-shadow: none;
+	border: 2px solid #007bff;
+}

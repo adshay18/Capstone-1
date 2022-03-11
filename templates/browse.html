@@ -2,26 +2,26 @@
 {% block title %}picl{% endblock %}
 {% block content %}
     <h1>What are you looking for?</h1>
-    <ul>
-        <li>
+    <ul class="list-group">
+        <li class="list-group-item bg-dark">
             <form class="navbar-form navbar-right" action="/users">
-                <input name="u" class="form-control" placeholder="Search users" id="user-search">
+                <input name="u" class="form-control" placeholder="Search people" id="list">
                 <button class="btn btn-default">
                   <span class="fa fa-search"></span>
                 </button>
               </form>
         </li>
-        <li>
+        <li class="list-group-item bg-dark">
             <form class="navbar-form navbar-right" action="/search">
-                <input name="q" class="form-control" placeholder="Search images" id="image-search">
+                <input name="q" class="form-control" placeholder="Search images" id="list">
                 <button class="btn btn-default">
                   <span class="fa fa-search"></span>
                 </button>
               </form>
         </li>
-        <li>
+        <li class="list-group-item bg-dark">
             <form class="navbar-form navbar-right" action="/boards">
-                <input name="b" class="form-control" placeholder="Search boards" id="board-search">
+                <input name="b" class="form-control" placeholder="Search boards" id="list">
                 <button class="btn btn-default">
                   <span class="fa fa-search"></span>
                 </button>
