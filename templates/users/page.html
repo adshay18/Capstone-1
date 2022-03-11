@@ -2,8 +2,16 @@
 
 {% block content %}
 
+{% if user.banner_url %}
 <div id="picl-hero" class="full-width" style="background-image: url({{user.banner_url}});"></div>
+{% else %}
+<div id="picl-hero" class="full-width" style="background-image: url(/static/images/default_banner.png);"></div>
+{% endif %}
+{% if user.image_url %}
 <img src="{{ user.image_url }}" alt="Image for {{ user.username }}" id="profile-avatar">
+{% else %}
+<img src="/static/images/default-pic.png" alt="Image for {{ user.username }}" id="profile-avatar">
+{% endif %}
 <div class="row full-width">
   <div class="container">
     <div class="row justify-content-end">
@@ -62,8 +70,17 @@
 <div class="row">
   <div class="col-sm-3">
     <h4 id="sidebar-username">@{{ user.username }}</h4>
+    {% if user.bio %}
     <p>{{user.bio}}</p>
+    {% else %}
+    <p>Just another picl for the jar</p>
+    {% endif %}
+
+    {% if user.location %}
     <p class="user-location"><span class="fa fa-map-marker"></span> {{user.location}}</p>
+    {% else %}
+    <p class="user-location"><span class="fa fa-map-marker"></span> Earth</p>
+    {% endif %}
   </div>
 
   {% block user_details %}
