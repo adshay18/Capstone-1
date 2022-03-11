@@ -133,9 +133,9 @@ nav + .container {
 	margin-bottom: 20px;
 }
 
-.btn {
+/* .btn {
 	border-radius: 50px;
-}
+} */
 
 .btn:hover {
 	cursor: pointer;
@@ -255,9 +255,28 @@ nav + .container {
 	word-wrap: break-word;
 }
 
-@media (max-width: 768px) {
-	.full-width .user-stats .stat {
-		display: none;
+@media (max-width: 991px) {
+	.full-width .user-stats {
+		position: absolute;
+		margin-top: -25px;
+		margin-left: 40px;
+	}
+}
+
+@media (max-width: 767px) {
+	#profile-avatar {
+		margin-left: -80px;
+	}
+}
+@media (max-width: 687px) {
+	#profile-avatar {
+		margin-left: -50px;
+	}
+}
+
+@media (max-width: 389px) {
+	.user-stats {
+		background-color: #fff;
 	}
 }
 
@@ -456,4 +475,10 @@ a:hover {
 #list:focus {
 	box-shadow: none;
 	border: 2px solid #007bff;
+}
+
+/* User page styling */
+.offcanvas-header {
+	margin-top: 95px;
+	color: black;
 }

@@ -7,33 +7,50 @@
 <div class="row full-width">
   <div class="container">
     <div class="row justify-content-end">
+      <div class="col-3"></div>
       <div class="col-9">
         <ul class="user-stats nav nav-pills">
           <li class="stat">
             <p class="small">Boards</p>
-            <h4>
+            <h4 class="ms-1">
               <a href="/users/{{ user.id }}/boards">{{ user.boards | length }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Favorite Boards</p>
-            <h4>
+            <h4 class="ms-1">
               <a href="/users/{{ user.id }}/fav_boards">{{ user.fav_boards | length }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Likes</p>
-            <h4>
+            <h4 class="ms-1">
               <a href="/users/{{user.id}}">{{ user.likes | length }}</a>
             </h4>
           </li>
-          <div class="ml-auto">
+          
+            <div class="m-auto">
             {% if g.user.id == user.id %}
-            <a href="/users/edit" class="btn btn-outline-secondary">Edit Profile</a>
-            <form method="POST" action="/users/delete" class="form-inline">
-              <button class="btn btn-outline-danger ml-2">Delete Profile</button>
-            </form>
-            <a href="/users/add_board" class="btn btn-outline-success">New Board</a>
+            <button class="btn btn-outline-dark btn-square-md user" type="button" data-bs-toggle="offcanvas" data-bs-target="#user-controls" aria-controls="user-controls" aria-expanded="false" aria-label="Toggle user options">
+              <i class="fa fa-bars"></i>
+            </button>
+            <div class="offcanvas offcanvas-end" id="user-controls">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Options</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <ul class="list-group">
+                <a href="/users/edit" class="btn btn-outline-secondary list-group-item">Edit Profile</a>
+              
+                <a href="/users/add_board" class="btn btn-outline-success list-group-item">New Board</a>
+                <div class="container-fluid justify-content-center">
+                  <form method="POST" action="/users/delete" class="form-inline list-group-item">
+                  <button class="btn btn-outline-danger">Delete Profile</button>
+                  <p>This action cannot be undone</p>
+                </form>
+                </div>
+              </ul>
+            </div>
             {% endif %}
           </div>
         </ul>
