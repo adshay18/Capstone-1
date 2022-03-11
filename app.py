@@ -219,7 +219,7 @@ def list_users():
     else:
         users = User.query.filter(User.username.like(f"%{search}%")).all()
 
-    return render_template('users/index.html', users=users)
+    return render_template('users/index.html', users=users, search=search)
     
 @app.route('/users/<int:user_id>')
 def show_user(user_id):
@@ -295,7 +295,7 @@ def show_boards():
     else:
         boards = Board.query.filter(Board.name.like(f"%{search}%")).all()
 
-    return render_template('boards/index.html', boards=boards)
+    return render_template('boards/index.html', boards=boards, search=search)
 
 @app.route('/users/<int:user_id>/boards')
 def show_boards_for_user(user_id):

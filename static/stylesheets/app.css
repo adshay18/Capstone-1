@@ -278,6 +278,9 @@ a {
 	text-decoration: none;
 	color: #0f772e;
 }
+a:hover {
+	color: white;
+}
 
 .home-header {
 	align-items: center;
@@ -382,7 +385,6 @@ a {
 .card {
 	background-color: rgb(36, 36, 36);
 	color: white;
-	font-size: 8px;
 }
 
 .card-text {
@@ -393,4 +395,34 @@ a {
 
 .form {
 	background-color: rgb(48, 48, 48);
+}
+
+/* Search landing pages */
+
+.main ul {
+	margin-left: 33.5%;
+}
+
+.main li {
+	background-color: rgb(36, 36, 36);
+}
+
+.main a {
+	color: white;
+}
+
+.main a:hover {
+	color: #0f772e;
+}
+
+@media (max-width: 767px) {
+	.main ul {
+		margin-left: 20%;
+	}
+}
+
+@media (max-width: 437px) {
+	.main ul {
+		margin-left: 12%;
+	}
 }
