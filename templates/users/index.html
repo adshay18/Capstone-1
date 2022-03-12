@@ -28,15 +28,34 @@
 
           {% for user in users %}
 
-            <div class="col-lg-4 col-md-6 col-12">
-              <div class="card user-card">
-                <div class="card">
-                    <div class="card-body">
-                      <a href="/users/{{user.id}}">{{user.username}}</a>
-                    </div>
-                  </div>
+          <div class="col-lg-4 col-md-6 col-12">
+            <div class="card user-card">
+              <div class="card-inner">
+                <div class="image-wrapper">
+                  {% if user.banner_url %}
+                  <img src="{{ user.banner_url }}" alt="Banner image for {{user.username}}" class="card-hero">
+                  {% else %}
+                  <img src="/static/images/default_banner.png" alt="Generic banner image" class="card-hero">
+                  {% endif %}
+                </div>
+                <div class="card-contents">
+                  <a href="/users/{{ user.id }}" class="card-link">
+                    {% if user.image_url %}
+                    <img src="{{ user.image_url }}" alt="Profile Image for {{ user.username }}" class="card-image">
+                    {% else %}
+                    <img src="/static/images/default-pic.png" alt="Profile Image for {{ user.username }}" class="card-image">
+                    {% endif %}
+                    <p>@{{ user.username }}</p>
+                  </a>
+                </div>
+                {% if user.bio %}
+                <p class="card-bio">{{user.bio}}</p>
+                {% else %}
+                <p class="card-bio">Just another picl for the jar</p>
+                {% endif %}
               </div>
             </div>
+          </div>
 
           {% endfor %}
 
