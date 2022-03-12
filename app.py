@@ -69,6 +69,7 @@ def home_page():
         delete_search()
         response = requests.get(f'{base_url}/curated', headers=my_headers)
         images = response.json()['photos']
+        images.reverse()
         for image in images:
             try:
                 pexel_id = image['id']
