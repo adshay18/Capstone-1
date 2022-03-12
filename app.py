@@ -275,6 +275,8 @@ def delete_user():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
+    Fav_Board.query.filter(Fav_Board.user_id==g.user.id).delete()
+    Board.query.filter(Board.user_id==g.user.id).delete()
     logout()
     off_user_page()
     delete_search()
