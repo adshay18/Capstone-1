@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
-import math
+
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
 from forms import SignupForm, LoginForm, UserEditForm, NewBoardForm, AddImageForm
@@ -41,11 +41,6 @@ def store_search():
 def delete_search():
     session['SEARCH_TERM'] = None
 
-def on_user_page(user_id):
-    session["USER_PAGE"] = user_id
-    
-def off_user_page():
-    session["USER_PAGE"] = False
 
 def login(user):
     """Log in user."""
@@ -101,7 +96,6 @@ def home_page():
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     '''Create a new user and add to db, redirect back to homepage'''
-    off_user_page()
     form = SignupForm()
     
     if form.validate_on_submit():
@@ -128,7 +122,9 @@ def signup():
 @app.route('/logout')
 def logout_user():
     """Handle logout of user."""
-    off_user_page()
+    if not g.user:
+        flash("How did you even do that, you need to be logged in to logout.", "warning")
+        return redirect('/')
     logout()
     flash("Logged out. Please login again to continue.", 'success')
 
@@ -159,7 +155,6 @@ def login_user():
 @app.route('/search')
 def find_images():
     """Page with matching images to search results"""
-    off_user_page()
     if not g.user:
         flash("Please login or create an account to access free photos.", "danger")
         return redirect("/")
@@ -209,6 +204,9 @@ def find_images():
 @app.route('/browse')
 def show_browse_page():
     '''Page with different search bars'''
+    if not g.user:
+        flash("Login to search images, users and boards.", "warning")
+        return redirect('/browse')
     return render_template('browse.html')
 
 ####################### User routes ######################################
@@ -216,7 +214,9 @@ def show_browse_page():
 @app.route('/users')
 def list_users():
     '''Listing all users'''
-    off_user_page()
+    if not g.user:
+        flash('Please login.', 'warning')
+    
     search = request.args.get('u')
 
     if not search:
@@ -230,7 +230,10 @@ def list_users():
 def show_user(user_id):
     '''Show user profile'''
     delete_search()
-    on_user_page(user_id)
+    if not g.user:
+        flash('Please login or signup to view content.', 'danger')
+        return redirect('/')
+    
     user = User.query.get_or_404(user_id)
 
     user_likes = Like.query.filter(Like.user_id==g.user.id).all()
@@ -251,7 +254,7 @@ def profile():
         return redirect("/")
     elif g.user:
         form = UserEditForm(obj=g.user)
-        off_user_page()
+
         if form.validate_on_submit():
             user = User.authenticate(g.user.username,
                                     form.password.data)
@@ -283,7 +286,6 @@ def delete_user():
     Fav_Board.query.filter(Fav_Board.user_id==g.user.id).delete()
     Board.query.filter(Board.user_id==g.user.id).delete()
     logout()
-    off_user_page()
     delete_search()
     db.session.delete(g.user)
     db.session.commit()
@@ -294,7 +296,10 @@ def delete_user():
 @app.route('/boards')
 def show_boards():
     '''List all boards'''
-    off_user_page()
+    if not g.user:
+        flash('Please login or signup to view content.', 'danger')
+        return redirect('/')
+    
     search = request.args.get('b')
 
     if not search:
@@ -307,7 +312,6 @@ def show_boards():
 @app.route('/users/<int:user_id>/boards')
 def show_boards_for_user(user_id):
     '''Show all boards for a given user'''
-    off_user_page()
     delete_search()
     if not g.user:
         flash('Access denied.', 'danger')
@@ -322,7 +326,9 @@ def show_boards_for_user(user_id):
 @app.route('/users/<int:user_id>/boards/<int:board_id>')
 def show_board(user_id, board_id):
     '''Show details for a specific board'''
-    off_user_page()
+    if not g.user:
+        flash('Please login or signup to view content.', 'danger')
+        return redirect('/')
     delete_search()
     user = User.query.get_or_404(user_id)
     board = Board.query.get_or_404(board_id)
@@ -340,7 +346,6 @@ def show_board(user_id, board_id):
 @app.route('/users/<int:user_id>/fav_boards')
 def show_user_favorites(user_id):
     '''Show all of a user's favorite boards'''
-    off_user_page()
     delete_search()
     if not g.user:
         flash('Access denied.', 'danger')
@@ -400,7 +405,7 @@ def create_board():
         return redirect("/")
     elif g.user:
         form = NewBoardForm()
-        off_user_page()
+
         if form.validate_on_submit():
             
             name = form.name.data
@@ -438,6 +443,9 @@ def delete_board(board_id, user_id):
 @app.route('/users/<int:user_id>/boards/add/<int:img_id>', methods=["POST"])
 def add_image_to_board(user_id, img_id):
     '''Handle adding an image to a board'''
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/')
     form = AddImageForm()
     user = g.user
     form.board_id.choices = [(board.id, board.name) for board in user.boards]
@@ -459,7 +467,9 @@ def add_image_to_board(user_id, img_id):
 @app.route('/users/<int:user_id>/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
 def remove_image_from_board(user_id, board_id, img_id):
     '''Handle removing an image from a board'''
-    
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/')
     board_image = Board_Image.query.filter(Board_Image.board_id==board_id, Board_Image.image_id==img_id).first()
     db.session.delete(board_image)
     db.session.commit()
@@ -469,9 +479,12 @@ def remove_image_from_board(user_id, board_id, img_id):
 @app.route('/users/<int:user_id>/favorite/<int:board_id>', methods=["POST"])
 def add_fav_board(user_id, board_id):
     '''Add board to list of current user's favorite boards'''
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/')
+    
     board_owner = user_id
     board = board_id
-    user = g.user
     fav = Fav_Board(user_id=g.user.id, board_id=board)
     db.session.add(fav)
     db.session.commit()
@@ -481,9 +494,12 @@ def add_fav_board(user_id, board_id):
 @app.route('/users/<int:user_id>/unfavorite/<int:board_id>', methods=["POST"])
 def remove_fav_board(user_id, board_id):
     '''Remove board from list of current user's favorite boards'''
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/')
+    
     board_owner = user_id
     board = board_id
-    user = g.user
     
     fav = Fav_Board.query.filter(Fav_Board.board_id==board, Fav_Board.user_id==g.user.id).first()
     
