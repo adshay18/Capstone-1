@@ -164,22 +164,26 @@ def find_images():
         flash("Please login or create an account to access free photos.", "danger")
         return redirect("/")
     search = request.args.get('q')
+    page = request.args.get('p', 1)
+    prev_page = None
+    next_page = None
+    
     if not search:
         return render_template('browse.html')
     else:
         store_search()
-        response = requests.get(f'{base_url}/search?query={search}&per_page=21&page=1', headers=my_headers)
+        response = requests.get(f'{base_url}/search?query={search}&per_page=54&page={page}', headers=my_headers)
         images = response.json()['photos']
-        num_responses = response.json()['total_results']
-        num_pages = math.ceil(num_responses/21)
         
-        print('------------------')
-        print('------------------')
-        print('------------------')
-        print('------------------')
-        print('------------------')
-        print('------------------')
-        print(num_pages)
+        if response.json()['next_page']:
+            next_page = int(page) + 1
+        
+        try:    
+            if response.json()['prev_page']:
+                prev_page = int(page) - 1
+        except KeyError:
+            prev_page = None
+                                        
         for image in images:
             try:
                 pexel_id = image['id']
@@ -200,7 +204,7 @@ def find_images():
     form = AddImageForm()
     form.board_id.choices = [(board.id, board.name) for board in user.boards]
         
-    return render_template('results.html', images=images, likes=likes, user=user, form=form, search=search)
+    return render_template('results.html', images=images, likes=likes, user=user, form=form, search=search, page=page, next_page=next_page, prev_page=prev_page)
 
 @app.route('/browse')
 def show_browse_page():
