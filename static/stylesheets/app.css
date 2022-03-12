@@ -2,7 +2,7 @@
 
 .navbar {
 	background-color: rgb(65, 65, 65);
-	height: 65px;
+	height: 75px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 	margin-bottom: 1rem;
 	position: fixed;
@@ -307,6 +307,10 @@ a:hover {
 	color: rgba(255, 255, 255, 0.3);
 }
 
+.board-thumbnail {
+	width: 100%;
+}
+
 /* Footer styling */
 
 .footer-clean {
@@ -406,7 +410,7 @@ a:hover {
 	color: white;
 }
 
-.card-text {
+.hide {
 	display: none;
 }
 
