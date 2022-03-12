@@ -546,3 +546,15 @@ a:hover {
 p.card-bio {
 	margin: 2em 10px 5px;
 }
+
+.delete-btn {
+	position: relative;
+	top: -39px;
+	right: -60px;
+}
+
+.fav-btn {
+	position: relative;
+	top: -110px;
+	right: 40px;
+}
