@@ -2,7 +2,7 @@
 
 .navbar {
 	background-color: rgb(65, 65, 65);
-
+	height: 65px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 	margin-bottom: 1rem;
 	position: fixed;
@@ -31,7 +31,7 @@
 	display: inline-block;
 	margin-bottom: 2px;
 	margin-right: 5px;
-	width: 120px;
+	width: 100px;
 	border-radius: 2px;
 }
 
@@ -288,7 +288,7 @@ nav + .container {
 
 body {
 	height: 100%;
-	padding-top: 95px;
+	padding-top: 80px;
 	background-color: rgb(48, 48, 48);
 	color: rgb(239, 255, 247);
 }
@@ -481,4 +481,10 @@ a:hover {
 .offcanvas-header {
 	margin-top: 95px;
 	color: black;
+}
+
+@media (min-width: 767px) {
+	.likes {
+		max-height: 400px;
+	}
 }
