@@ -82,10 +82,7 @@ def home_page():
         likes = [like.pexel_id for like in user_likes]
         user = g.user
         
-        form = AddImageForm()
-        form.board_id.choices = [(board.id, board.name) for board in user.boards]
-        
-        return render_template('home.html', images=images, user=user, likes=likes, form=form)
+        return render_template('home.html', images=images, user=user, likes=likes)
     else:
         return render_template('home-visitor.html')
 
@@ -199,10 +196,8 @@ def find_images():
     likes = [like.pexel_id for like in user_likes]
     user = g.user
     
-    form = AddImageForm()
-    form.board_id.choices = [(board.id, board.name) for board in user.boards]
         
-    return render_template('results.html', images=images, likes=likes, user=user, form=form, search=search, page=page, next_page=next_page, prev_page=prev_page)
+    return render_template('results.html', images=images, likes=likes, user=user, search=search, page=page, next_page=next_page, prev_page=prev_page)
 
 @app.route('/browse')
 def show_browse_page():
@@ -239,10 +234,11 @@ def show_user(user_id):
     
     user = User.query.get_or_404(user_id)
 
-    user_likes = Like.query.filter(Like.user_id==g.user.id).all()
+    user_likes = Like.query.filter(Like.user_id==g.user.id).order_by(Like.id.desc()).all()
     likes = [like.pexel_id for like in user_likes]
     # snag images from db
-    images = user.likes
+    images = [like.image for like in user_likes]
+   
     form = AddImageForm()
     form.board_id.choices = [(board.id, board.name) for board in user.boards]
     
@@ -340,10 +336,7 @@ def show_board(user_id, board_id):
     user_likes = Like.query.filter(Like.user_id==g.user.id).all()
     likes = [like.pexel_id for like in user_likes]
     
-    form = AddImageForm()
-    form.board_id.choices = [(board.id, board.name) for board in user.boards]
-    
-    return render_template('boards/details.html', user=user, board=board, images=images, likes=likes, form=form)
+    return render_template('boards/details.html', user=user, board=board, images=images, likes=likes)
 
 
 @app.route('/users/<int:user_id>/fav_boards')
