@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
@@ -369,12 +369,11 @@ def add_like(img_id):
     db.session.add(like)
     db.session.commit()
     
-    if not session['SEARCH_TERM']:
-        if session["USER_PAGE"]:
-            return redirect(f'/users/{session["USER_PAGE"]}')
-        return redirect('/')
-    if session['SEARCH_TERM']:
-        return redirect(f"/search?q={session['SEARCH_TERM']}")
+    return jsonify({
+        'user' : g.user.username,
+        'like' : 'created',
+        'liked_pexel_ids' : [like.pexel_id for like in g.user.likes]
+    })
     
     
 @app.route('/users/unlike/<int:img_id>', methods=["POST"])
@@ -389,12 +388,11 @@ def remove_like(img_id):
     db.session.delete(like)
     db.session.commit()
     
-    if not session['SEARCH_TERM']:
-        if session["USER_PAGE"]:
-            return redirect(f'/users/{session["USER_PAGE"]}')
-        return redirect('/')
-    if session['SEARCH_TERM']:
-        return redirect(f"/search?q={session['SEARCH_TERM']}")
+    return jsonify({
+        'user' : g.user.username,
+        'like' : 'deleted',
+        'liked_pexel_ids' : [like.pexel_id for like in g.user.likes]
+    })
     
     
 @app.route('/users/add_board', methods=["GET", "POST"])

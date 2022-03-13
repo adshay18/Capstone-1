@@ -558,3 +558,13 @@ p.card-bio {
 	top: -110px;
 	right: 40px;
 }
+
+.like-form-button {
+	background-color: #657786;
+	color: white;
+}
+
+.unlike-form-button {
+	background-color: #007bff;
+	color: white;
+}

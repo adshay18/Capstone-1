@@ -37,16 +37,16 @@
                 <p class="card-text">This <a href="{{image.url}}">Photo</a> is courtesy of <a href="pexels.com">Pexels</a>.</p>
                 {% if image.pexel_id in likes %}
 
-                    <form method="POST" action="/users/unlike/{{image.pexel_id}}" id="unlike-form" class="mb-2">
-                        <button class="btn btn-sm btn-primary">
+                    <form method="POST" action="/users/unlike/{{image.pexel_id}}" id="form{{image.pexel_id}}" class="unlike-form">
+                        <button class="btn btn-sm my-2 unlike-form-button">
                             <i class="fa fa-thumbs-up"></i> 
                         </button>
                     </form>
 
                 {% else %}
 
-                    <form action="/users/like/{{image.pexel_id}}" method="POST" id="like-form" class="mb-2">
-                        <button class="btn btn-sm btn-secondary">
+                    <form action="/users/like/{{image.pexel_id}}" method="POST" id="form{{image.pexel_id}}" class="like-form">
+                        <button class="btn btn-sm my-2 like-form-button">
                             <i class="fa fa-thumbs-up"></i> 
                         </button>
                     </form>

@@ -35,19 +35,19 @@
                                 <div class="card-body">
                                 {% if image['id'] in likes %}
 
-                                    <form method="POST" action="/users/unlike/{{image['id']}}" id="unlike-form">
-                                        <button class="btn btn-sm btn-primary mb-1">
-                                            <i class="fa fa-thumbs-up"></i> 
-                                        </button>
-                                    </form>
+                                <form method="POST" action="/users/unlike/{{image['id']}}" id="form{{image['id']}}" class="unlike-form">
+                                    <button class="btn btn-sm mb-1 unlike-form-button">
+                                        <i class="fa fa-thumbs-up"></i> 
+                                    </button>
+                                </form>
 
                                 {% else %}
 
-                                    <form action="/users/like/{{image['id']}}" method="POST" id="like-form">
-                                        <button class="btn btn-sm btn-secondary mb-1">
-                                            <i class="fa fa-thumbs-up"></i> 
-                                        </button>
-                                    </form>
+                                <form action="/users/like/{{image['id']}}" method="POST" id="form{{image['id']}}" class="like-form">
+                                    <button class="btn btn-sm mb-1 like-form-button">
+                                        <i class="fa fa-thumbs-up"></i> 
+                                    </button>
+                                </form>
 
                                 {% endif %}
                                 
