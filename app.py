@@ -170,8 +170,11 @@ def find_images():
         response = requests.get(f'{base_url}/search?query={search}&per_page=54&page={page}', headers=my_headers)
         images = response.json()['photos']
         
-        if response.json()['next_page']:
-            next_page = int(page) + 1
+        try:
+            if response.json()['next_page']:
+                next_page = int(page) + 1
+        except KeyError:
+            next_page = None
         
         try:    
             if response.json()['prev_page']:
@@ -457,10 +460,10 @@ def add_image_to_board(user_id, img_id):
         db.session.commit()
         
         flash(f'Added to board!', 'success')
-        return redirect('/')
+        return redirect(f'/users/{user.id}')
     
     flash('Something went wrong.', 'primary')
-    return redirect('/')
+    return redirect(f'/users/{user.id}')
 
 @app.route('/users/<int:user_id>/boards/<int:board_id>/remove/<int:img_id>', methods=["POST"])
 def remove_image_from_board(user_id, board_id, img_id):

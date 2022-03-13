@@ -51,18 +51,6 @@
 
                                 {% endif %}
                                 
-                                <form  action="/users/{{user.id}}/boards/add/{{image['id']}}" method="POST" id="board_form">
-                                    {{ form.hidden_tag() }}
-                            
-                                    {% for field in form if field.widget.input_type != 'hidden' %}
-                                      {% for error in field.errors %}
-                                        <span class="text-danger">{{ error }}</span>
-                                      {% endfor %}
-                                      {{ field(placeholder=field.label.text, class="form-control") }}
-                                    {% endfor %}
-                            
-                                    <button class="btn btn-success btn-block btn-md mt-0">picl it</button>
-                                  </form>
                                   <p class="card-text">This <a href="{{image['url']}}">Photo</a> was taken by <a href="{{image['photographer_url']}}">{{image['photographer']}}</a> on Pexels.</p>
                     
                                 </div>
