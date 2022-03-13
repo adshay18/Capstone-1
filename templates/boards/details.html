@@ -13,13 +13,13 @@
             {% endif %}
             {% if board in g.user.fav_boards %}
                 <form action="/users/{{user.id}}/unfavorite/{{board.id}}" method="POST" class="fav-btn">
-                    <button class="btn btn-sm btn-secondary">
+                    <button class="btn btn-sm btn-secondary my-2">
                         <i class="fa fa-star text-warning"></i>
                     </button>
                 </form>
             {% else %}
             <form action="/users/{{user.id}}/favorite/{{board.id}}" method="POST" class="fav-btn">
-                <button class="btn btn-sm btn-secondary">
+                <button class="btn btn-sm btn-secondary my-2">
                     <i class="fa fa-star"></i>
                 </button>
             </form>
