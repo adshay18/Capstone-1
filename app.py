@@ -23,7 +23,11 @@ app.config['SQLALCHEMY_ECHO'] = False
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'litup')
 # toolbar = DebugToolbarExtension(app)
-
+print('**********************')
+print('**********************')
+print('**********************')
+print('**********************')
+print(app.config['SQLALCHEMY_DATABASE_URI'])
 connect_db(app)
 
 
