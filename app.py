@@ -25,7 +25,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'litup')
 # toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-port = int(os.environ.get('PORT', 5000))
+
 
 @app.before_request
 def add_user_to_g():
