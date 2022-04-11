@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g, 
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
+import os
 
 
 from models import db, connect_db, User, Like, Image, Board, Fav_Board, Board_Image
@@ -14,7 +15,8 @@ app = Flask(__name__)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///picl'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'postgres://qfypfgfblivuxq:01791daa8b0fc57654cd28e081d4cf3055c112f6587c14ec5e5d146479868639@ec2-34-207-12-160.compute-1.amazonaws.com:5432/duhn34i3r8hkf', 'postgresql:///picl')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
