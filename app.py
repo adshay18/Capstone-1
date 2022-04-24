@@ -212,7 +212,7 @@ def show_browse_page():
     '''Page with different search bars'''
     if not g.user:
         flash("Login to search images, users and boards.", "warning")
-        return redirect('/browse')
+        return redirect('/')
     return render_template('browse.html')
 
 ####################### User routes ######################################
