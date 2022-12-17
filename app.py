@@ -243,12 +243,13 @@ def show_user(user_id):
     user = User.query.get_or_404(user_id)
 
     user_likes = Like.query.filter(Like.user_id==g.user.id).order_by(Like.id.desc()).all()
+    page_user_likes = Like.query.filter(Like.user_id==user.id).order_by(Like.id.desc()).all()
     likes = [like.pexel_id for like in user_likes]
     # snag images from db
-    images = [like.image for like in user_likes]
+    images = [like.image for like in page_user_likes]
    
     form = AddImageForm()
-    form.board_id.choices = [(board.id, board.name) for board in user.boards]
+    form.board_id.choices = [(board.id, board.name) for board in g.user.boards]
     
     return render_template('users/profile.html', images=images, user=user, likes=likes, form=form)  
     
